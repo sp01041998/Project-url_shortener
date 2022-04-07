@@ -11,13 +11,15 @@ const urlSchema = new mongoose.Schema({
     shortUrl:{
         type : String,
         unique:true,
-        trim:true,
+        
         required:[true, "shortUrl required"]
     }, 
 
     urlCode :{
         type : String,
         unique:true,
+        lowercase:true,
+        trim:true,
         required:[true, "url code required"]
     
 
