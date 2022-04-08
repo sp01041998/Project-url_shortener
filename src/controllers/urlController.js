@@ -64,7 +64,7 @@ const shortUrl = async function (req, res) {
         let cahcedProfileData = await GET_ASYNC(`${req.body.longUrl}`)
         cahcedProfileData = JSON.parse(cahcedProfileData)
         if (cahcedProfileData) {
-            return res.status(202).send({ msg: "short url already exist for this long URl", urlCode: cahcedProfileData.urlCode, shortUrl: cahcedProfileData.shortUrl })  // iskop
+            return res.status(200).send({status : true , msg: "short url already exist for this long URl", urlCode: cahcedProfileData.urlCode, shortUrl: cahcedProfileData.shortUrl })  // iskop
         } else {
             // let profile = await urlModel.findOne({ longUrl });
             // if (!profile) {
@@ -85,7 +85,8 @@ const shortUrl = async function (req, res) {
 
             let urlGenerated = await urlModel.create(obj)
             await SET_ASYNC(`${req.body.longUrl}`, JSON.stringify(urlGenerated))
-            return res.status(200).send({ data: urlGenerated });
+            await SET_ASYNC(`${urlCode}`, JSON.stringify(urlGenerated))
+            return res.status(201).send({ status : true, data: urlGenerated });
 
 
             // }
@@ -107,18 +108,19 @@ const shortToLongUrl = async function (req, res) {
 
         if (cahcedProfileData) {
             return res.redirect(data.longUrl)
+        
         } else {
             let profile = await urlModel.findOne({ urlCode });
             // console.log(profile)
             if (profile) {
                 await SET_ASYNC(`${req.params.urlCode}`, JSON.stringify(profile))
                 return res.redirect(profile.longUrl);
-            } else {
-                return res.status(404).json('No URL Found')
+            }  else {
+                return res.status(404).send({status : false,msg:'No URL Found'})
             }
 
 
-        }
+         }
 
     }
     catch (error) {
